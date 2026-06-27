@@ -96,6 +96,28 @@ class LCRPipeline:
             return False
         
         return True
+
+    def execute_sql_folder(self, folder, description):
+        """Execute all SQL files in a folder in filename order."""
+        print(f"\n{description}...")
+
+        folder_path = self.sql_path / folder
+
+        if not folder_path.exists():
+            print(f"❌ SQL folder not found: {folder_path}")
+            return False
+
+        sql_files = sorted(folder_path.glob("*.sql"))
+
+        if not sql_files:
+            print(f"❌ No SQL files found in: {folder_path}")
+            return False
+
+        for sql_file in sql_files:
+            if not self.execute_sql(sql_file.relative_to(self.sql_path), f"Executing {sql_file.name}"):
+                return False
+
+        return True
     
     def run_setup(self):
         """Create Unity Catalog structure"""
@@ -109,21 +131,21 @@ class LCRPipeline:
         print("\n" + "="*80)
         print("Step 2: Bronze Layer - Raw Data Ingestion")
         print("="*80)
-        return self.execute_sql("01_bronze_layer.sql", "Loading bronze tables")
+        return self.execute_sql_folder("bronze", "Loading bronze tables")
     
     def run_silver(self):
         """Transform to silver layer"""
         print("\n" + "="*80)
         print("Step 3: Silver Layer - Data Quality")
         print("="*80)
-        return self.execute_sql("02_silver_layer.sql", "Creating silver tables")
+        return self.execute_sql_folder("silver", "Creating silver tables")
     
     def run_gold(self):
         """Build gold layer"""
         print("\n" + "="*80)
         print("Step 4: Gold Layer - Dimensional Model")
         print("="*80)
-        return self.execute_sql("03_gold_layer.sql", "Building dimensional model")
+        return self.execute_sql_folder("gold", "Building dimensional model")
     
     def run_all(self, include_setup=False, generate_data=False, date=None):
         """Run the complete pipeline"""

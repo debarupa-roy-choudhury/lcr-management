@@ -15,9 +15,9 @@ lcr_management/
 │   └── run_pipeline.py        # Orchestrate pipeline execution
 ├── sql/
 │   ├── 00_setup.sql          # Unity Catalog setup
-│   ├── 01_bronze_layer.sql   # Raw data ingestion
-│   ├── 02_silver_layer.sql   # Data quality transforms
-│   └── 03_gold_layer.sql     # Dimensional model
+│   ├── bronze/               # Raw data ingestion statements
+│   ├── silver/               # Data quality transform statements
+│   └── gold/                 # Dimensional model statements
 ├── requirements.txt           # Python dependencies
 └── README.md                  # Full documentation
 ```
@@ -70,13 +70,13 @@ python src/run_pipeline.py --all
 **Option B: Run Individual Layers**
 ```bash
 # Bronze (raw ingestion)
-databricks sql execute --file sql/01_bronze_layer.sql
+for file in sql/bronze/*.sql; do databricks sql execute --file "$file"; done
 
 # Silver (data quality)
-databricks sql execute --file sql/02_silver_layer.sql
+for file in sql/silver/*.sql; do databricks sql execute --file "$file"; done
 
 # Gold (dimensional model)
-databricks sql execute --file sql/03_gold_layer.sql
+for file in sql/gold/*.sql; do databricks sql execute --file "$file"; done
 ```
 
 **Option C: Use Orchestrator**
@@ -139,9 +139,9 @@ Edit `src/data_generation.py` to change:
 ### 2. Update Transformations
 
 Edit SQL files:
-* `sql/01_bronze_layer.sql` - Add columns, change ingestion logic
-* `sql/02_silver_layer.sql` - Modify data quality rules
-* `sql/03_gold_layer.sql` - Add dimensions or facts
+* `sql/bronze/` - Add columns, change ingestion logic
+* `sql/silver/` - Modify data quality rules
+* `sql/gold/` - Add dimensions or facts
 
 ### 3. Test Changes
 
@@ -150,7 +150,7 @@ Edit SQL files:
 python src/data_generation.py
 
 # Test specific layer
-databricks sql execute --file sql/02_silver_layer.sql
+python src/run_pipeline.py --silver
 
 # Test full pipeline
 python src/run_pipeline.py --all
@@ -225,8 +225,9 @@ Example `job_config.json`:
     {
       "task_key": "run_pipeline",
       "depends_on": [{"task_key": "generate_data"}],
-      "sql_task": {
-        "file": {"path": "sql/01_bronze_layer.sql"}
+      "spark_python_task": {
+        "python_file": "src/run_pipeline.py",
+        "parameters": ["--all"]
       }
     }
   ],
