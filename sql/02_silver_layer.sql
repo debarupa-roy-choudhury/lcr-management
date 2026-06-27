@@ -41,7 +41,6 @@ CREATE OR REPLACE TABLE liquidity_dev.silver.balances_cleaned (
   load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into bronze table',
   silver_load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into silver table'
 )
-USING DELTA
 COMMENT 'Silver layer cleaned table containing account balance information with data quality rules applied (no nulls, deduplicated, trimmed, validated)';
 
 INSERT INTO liquidity_dev.silver.balances_cleaned
@@ -133,7 +132,6 @@ CREATE OR REPLACE TABLE liquidity_dev.silver.hqla_cleaned (
   load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into bronze table',
   silver_load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into silver table'
 )
-USING DELTA
 COMMENT 'Silver layer cleaned table containing High Quality Liquid Assets with data quality rules and HQLA level validation applied';
 
 INSERT INTO liquidity_dev.silver.hqla_cleaned
@@ -236,7 +234,6 @@ CREATE OR REPLACE TABLE liquidity_dev.silver.collateral_cleaned (
   load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into bronze table',
   silver_load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into silver table'
 )
-USING DELTA
 COMMENT 'Silver layer cleaned table containing collateral details with data quality rules and validation applied';
 
 INSERT INTO liquidity_dev.silver.collateral_cleaned

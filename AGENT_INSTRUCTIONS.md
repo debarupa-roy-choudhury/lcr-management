@@ -460,7 +460,7 @@ for dataset in ['balances', 'hqla', 'collateral']:
 ```markdown
 # Bronze Layer ETL
 
-Loads raw CSV files from landing zone into Delta tables:
+Loads raw CSV files from landing zone into managed Databricks tables:
 - `liquidity_dev.bronze.balances`
 - `liquidity_dev.bronze.hqla`
 - `liquidity_dev.bronze.collateral`
@@ -493,7 +493,6 @@ CREATE OR REPLACE TABLE liquidity_dev.bronze.balances (
   business_date DATE COMMENT 'Reporting date',
   created_timestamp TIMESTAMP COMMENT 'Record creation timestamp'
 )
-USING DELTA
 COMMENT 'Bronze layer - raw account balances from landing zone';
 
 INSERT OVERWRITE liquidity_dev.bronze.balances
@@ -531,7 +530,6 @@ CREATE OR REPLACE TABLE liquidity_dev.bronze.hqla (
   business_date DATE COMMENT 'Reporting date',
   created_timestamp TIMESTAMP COMMENT 'Record creation timestamp'
 )
-USING DELTA
 COMMENT 'Bronze layer - raw HQLA (High Quality Liquid Assets) from landing zone';
 
 INSERT OVERWRITE liquidity_dev.bronze.hqla
@@ -570,7 +568,6 @@ CREATE OR REPLACE TABLE liquidity_dev.bronze.collateral (
   business_date DATE COMMENT 'Reporting date',
   created_timestamp TIMESTAMP COMMENT 'Record creation timestamp'
 )
-USING DELTA
 COMMENT 'Bronze layer - raw collateral data from landing zone';
 
 INSERT OVERWRITE liquidity_dev.bronze.collateral
@@ -661,7 +658,6 @@ CREATE OR REPLACE TABLE liquidity_dev.silver.balances_cleaned (
   business_date DATE COMMENT 'Reporting date',
   created_timestamp TIMESTAMP COMMENT 'Record creation timestamp'
 )
-USING DELTA
 COMMENT 'Silver layer - cleaned and validated account balances';
 
 INSERT OVERWRITE liquidity_dev.silver.balances_cleaned
@@ -720,7 +716,6 @@ CREATE OR REPLACE TABLE liquidity_dev.silver.hqla_cleaned (
   business_date DATE COMMENT 'Reporting date',
   created_timestamp TIMESTAMP COMMENT 'Record creation timestamp'
 )
-USING DELTA
 COMMENT 'Silver layer - cleaned and validated HQLA data';
 
 INSERT OVERWRITE liquidity_dev.silver.hqla_cleaned
@@ -785,7 +780,6 @@ CREATE OR REPLACE TABLE liquidity_dev.silver.collateral_cleaned (
   business_date DATE COMMENT 'Reporting date',
   created_timestamp TIMESTAMP COMMENT 'Record creation timestamp'
 )
-USING DELTA
 COMMENT 'Silver layer - cleaned and validated collateral data';
 
 INSERT OVERWRITE liquidity_dev.silver.collateral_cleaned
@@ -903,7 +897,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_date (
   fiscal_quarter INT COMMENT 'Fiscal quarter',
   CONSTRAINT pk_dim_date PRIMARY KEY (date_key)
 )
-USING DELTA
 COMMENT 'Date dimension for time-based analysis';
 
 INSERT INTO liquidity_dev.gold.dim_date
@@ -947,7 +940,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_country (
   liquidity_risk_category STRING COMMENT 'Liquidity risk category (Low, Medium, High)',
   CONSTRAINT pk_dim_country PRIMARY KEY (country_key)
 )
-USING DELTA
 COMMENT 'Country dimension for geographic analysis';
 
 INSERT INTO liquidity_dev.gold.dim_country
@@ -1013,7 +1005,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_subsidiary (
   subsidiary_type STRING COMMENT 'Type of subsidiary',
   CONSTRAINT pk_dim_subsidiary PRIMARY KEY (subsidiary_key)
 )
-USING DELTA
 COMMENT 'Subsidiary dimension for organizational hierarchy';
 
 INSERT INTO liquidity_dev.gold.dim_subsidiary
@@ -1055,7 +1046,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_account (
   is_current STRING COMMENT 'Current record flag (Y/N)',
   CONSTRAINT pk_dim_account PRIMARY KEY (account_key)
 )
-USING DELTA
 COMMENT 'Account dimension with Type 2 SCD for tracking attribute changes';
 
 INSERT INTO liquidity_dev.gold.dim_account
@@ -1123,7 +1113,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.fact_intraday_liquidity (
   CONSTRAINT fk_liquidity_country FOREIGN KEY (country_key) REFERENCES liquidity_dev.gold.dim_country(country_key),
   CONSTRAINT fk_liquidity_subsidiary FOREIGN KEY (subsidiary_key) REFERENCES liquidity_dev.gold.dim_subsidiary(subsidiary_key)
 )
-USING DELTA
 COMMENT 'Intraday liquidity fact with LCR calculations by date, country, subsidiary';
 
 INSERT INTO liquidity_dev.gold.fact_intraday_liquidity

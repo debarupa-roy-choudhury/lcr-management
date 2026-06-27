@@ -1,14 +1,15 @@
 -- ============================================================================
 -- Bronze Layer - Raw Data Ingestion
 -- ============================================================================
--- Creates Delta tables from CSV files in landing zone
+-- Creates managed Databricks tables from CSV files in landing zone
+-- Delta is the default table format in modern Databricks workspaces
 -- Recursively reads all files, maintains full schema with comments
 -- Idempotent: Uses CREATE OR REPLACE TABLE
 --
 -- Usage:
 --   databricks sql execute --file sql/01_bronze_layer.sql
 
--- Create Delta table for Balances
+-- Create managed table for Balances
 -- Recursively reads all CSV files from the landing zone
 -- Idempotent: CREATE OR REPLACE TABLE
 
@@ -32,7 +33,6 @@ CREATE OR REPLACE TABLE liquidity_dev.bronze.balances (
   source_file STRING COMMENT 'Source CSV file path from landing zone',
   load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into bronze table'
 )
-USING DELTA
 COMMENT 'Bronze layer table containing account balance information across countries, subsidiaries, and account types for liquidity analysis';
 
 INSERT INTO liquidity_dev.bronze.balances
@@ -63,7 +63,7 @@ FROM read_files(
   pathGlobFilter => '*.csv'
 );
 
--- Create Delta table for HQLA (High Quality Liquid Assets)
+-- Create managed table for HQLA (High Quality Liquid Assets)
 -- Recursively reads all CSV files from the landing zone
 -- Idempotent: CREATE OR REPLACE TABLE
 
@@ -91,7 +91,6 @@ CREATE OR REPLACE TABLE liquidity_dev.bronze.hqla (
   source_file STRING COMMENT 'Source CSV file path from landing zone',
   load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into bronze table'
 )
-USING DELTA
 COMMENT 'Bronze layer table containing High Quality Liquid Assets (HQLA) details with Basel III classifications for liquidity coverage ratio calculations';
 
 INSERT INTO liquidity_dev.bronze.hqla
@@ -126,7 +125,7 @@ FROM read_files(
   pathGlobFilter => '*.csv'
 );
 
--- Create Delta table for Collateral
+-- Create managed table for Collateral
 -- Recursively reads all CSV files from the landing zone
 -- Idempotent: CREATE OR REPLACE TABLE
 
@@ -155,7 +154,6 @@ CREATE OR REPLACE TABLE liquidity_dev.bronze.collateral (
   source_file STRING COMMENT 'Source CSV file path from landing zone',
   load_timestamp TIMESTAMP COMMENT 'Timestamp when data was loaded into bronze table'
 )
-USING DELTA
 COMMENT 'Bronze layer table containing collateral details with quality ratings, valuations, and liquidation characteristics';
 
 INSERT INTO liquidity_dev.bronze.collateral

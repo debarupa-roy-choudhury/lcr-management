@@ -40,7 +40,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_date (
   fiscal_quarter INT COMMENT 'Fiscal quarter',
   CONSTRAINT pk_dim_date PRIMARY KEY (date_key)
 )
-USING DELTA
 COMMENT 'Date dimension for time-based analysis across liquidity metrics';
 
 INSERT INTO liquidity_dev.gold.dim_date
@@ -83,7 +82,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_country (
   liquidity_risk_category STRING COMMENT 'Assigned liquidity risk category (Low, Medium, High)',
   CONSTRAINT pk_dim_country PRIMARY KEY (country_key)
 )
-USING DELTA
 COMMENT 'Country dimension for geographic analysis of liquidity positions';
 
 INSERT INTO liquidity_dev.gold.dim_country
@@ -149,7 +147,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_subsidiary (
   subsidiary_type STRING COMMENT 'Type of subsidiary (Retail, Corporate, Investment, Asset Management, Private Banking, etc.)',
   CONSTRAINT pk_dim_subsidiary PRIMARY KEY (subsidiary_key)
 )
-USING DELTA
 COMMENT 'Subsidiary dimension for organizational hierarchy analysis';
 
 INSERT INTO liquidity_dev.gold.dim_subsidiary
@@ -192,7 +189,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.dim_account (
   is_current STRING COMMENT 'Current record flag (Y/N)',
   CONSTRAINT pk_dim_account PRIMARY KEY (account_key)
 )
-USING DELTA
 COMMENT 'Account dimension with Type 2 SCD for tracking account attribute changes';
 
 INSERT INTO liquidity_dev.gold.dim_account
@@ -268,7 +264,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.fact_intraday_liquidity (
   CONSTRAINT fk_liquidity_country FOREIGN KEY (country_key) REFERENCES liquidity_dev.gold.dim_country(country_key),
   CONSTRAINT fk_liquidity_subsidiary FOREIGN KEY (subsidiary_key) REFERENCES liquidity_dev.gold.dim_subsidiary(subsidiary_key)
 )
-USING DELTA
 COMMENT 'Intraday liquidity fact table with Liquidity Coverage Ratio (LCR) calculations aggregated by date, country, and subsidiary';
 
 INSERT INTO liquidity_dev.gold.fact_intraday_liquidity
@@ -420,7 +415,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.fact_hqla_position (
   CONSTRAINT fk_hqla_country FOREIGN KEY (country_key) REFERENCES liquidity_dev.gold.dim_country(country_key),
   CONSTRAINT fk_hqla_subsidiary FOREIGN KEY (subsidiary_key) REFERENCES liquidity_dev.gold.dim_subsidiary(subsidiary_key)
 )
-USING DELTA
 COMMENT 'HQLA position fact table for analyzing asset quality, composition, and concentration by level and type';
 
 INSERT INTO liquidity_dev.gold.fact_hqla_position
@@ -524,7 +518,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.fact_funding_stability (
   CONSTRAINT fk_funding_country FOREIGN KEY (country_key) REFERENCES liquidity_dev.gold.dim_country(country_key),
   CONSTRAINT fk_funding_subsidiary FOREIGN KEY (subsidiary_key) REFERENCES liquidity_dev.gold.dim_subsidiary(subsidiary_key)
 )
-USING DELTA
 COMMENT 'Funding stability fact table for analyzing funding sources by maturity, customer segment, and volatility';
 
 INSERT INTO liquidity_dev.gold.fact_funding_stability
@@ -641,7 +634,6 @@ CREATE OR REPLACE TABLE liquidity_dev.gold.fact_collateral_risk (
   CONSTRAINT fk_collateral_country FOREIGN KEY (country_key) REFERENCES liquidity_dev.gold.dim_country(country_key),
   CONSTRAINT fk_collateral_subsidiary FOREIGN KEY (subsidiary_key) REFERENCES liquidity_dev.gold.dim_subsidiary(subsidiary_key)
 )
-USING DELTA
 COMMENT 'Collateral risk fact table for analyzing collateral quality, concentration, and liquidation risk';
 
 INSERT INTO liquidity_dev.gold.fact_collateral_risk
