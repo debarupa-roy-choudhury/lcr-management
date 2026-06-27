@@ -21,6 +21,7 @@ A production-grade data engineering and analytics platform for calculating and m
 ## 📋 Table of Contents
 
 * [Project Overview](#-project-overview)
+* [Analytics Snapshots](#-analytics-snapshots)
 * [Architecture](#-architecture)
 * [Data Model](#-data-model)
 * [Getting Started](#-getting-started)
@@ -68,6 +69,18 @@ This platform implements a **complete end-to-end data pipeline**:
 * **Data Quality Framework**: Comprehensive validation, deduplication, and cleansing
 * **Multi-Country Support**: 8 European countries with multiple currencies
 * **Risk Analytics**: Built-in liquidity risk categories and concentration risk flags
+
+---
+
+## 📈 Analytics Snapshots
+
+### LCR Ratio Trend by Country
+
+![LCR Ratio Trend by Country](images/LCR%20Ratio%20Trend%20by%20Country.png)
+
+### HQLA vs Cash Outflows by Country
+
+![HQLA vs Cash Outflows by Country](images/HQLA%20vs%20Cash%20Outflows%20by%20Country.png)
 
 ---
 
